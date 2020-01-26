@@ -14,8 +14,8 @@ import ru.idmt.documino.client.DmConfigureException;
 import ru.idmt.documino.client.DocuminoClient;
 import ru.idmt.documino.client.api.session.IDmSession;
 import ru.idmt.documino.client.api.util.DmException;
-import ru.idmt.documino.client.commons.operation.GetInt;
 import ru.idmt.documino.client.commons.operation.GetMapCollection;
+import ru.idmt.documino.client.commons.operation.GetString;
 import ru.idmt.documino.client.commons.session.DmLoginInfo;
 import ru.said.model.Automobiles;
 
@@ -28,7 +28,7 @@ import java.util.Map;
 
 
 @Theme("mytheme")
-public class MyUI extends UI {
+class MyUI extends UI {
     private ListDataProvider<Automobiles> dataProvider;
     private List<Automobiles> autoList;
 
@@ -50,8 +50,8 @@ public class MyUI extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        try (IDmSession session = DocuminoClient.get().getDmAdminClient().newSession(new DmLoginInfo(null, null))) {
-
+        try {
+            IDmSession session = DocuminoClient.get().getDmAdminClient().newSession(new DmLoginInfo(null, null));
             //  Window subWindow = new Window("sub window");
             final VerticalLayout verticalLayout = new VerticalLayout();
             final HorizontalLayout horizontaLayout = new HorizontalLayout();
@@ -114,7 +114,7 @@ public class MyUI extends UI {
 
 
     private void initGrid() {
-
+        grid.addColumn(Automobiles::getId).setCaption("Id");
         grid.addColumn(Automobiles::getModel).setCaption("Model");
         grid.addColumn(Automobiles::getBody).setCaption("Body");
     }
@@ -130,6 +130,7 @@ public class MyUI extends UI {
         for (Map<String, Object> autoMap : autos) {
 
             Automobiles automobile = new Automobiles();
+            automobile.setId((String) autoMap.get("r_object_id"));
             automobile.setModel((String) autoMap.get("dss_model"));
             automobile.setBody((String) autoMap.get("dss_body"));
             autoList.add(automobile);
@@ -152,7 +153,7 @@ public class MyUI extends UI {
             this.session = session;
         }
 
-        public void addAuto(){
+        public void addAuto() {
             // super("новый автомобиль"); // Set window caption
             center();
 
@@ -173,9 +174,9 @@ public class MyUI extends UI {
                         .withValidator(value -> value.length() > 0, "Поле не должно быть пустым")
                         .bind(Automobiles::getBody, Automobiles::setBody);
 
-                String xql = String.format("CREATE ddt_automobile OBJECT SET dss_model = '%s', SET dss_body = '%s'", modelTipeTxt.getValue(), modelTipeTxt.getValue());
+                String xql = String.format("CREATE ddt_automobile OBJECT SET dss_model = '%s' SET dss_body = '%s'", modelTipeTxt.getValue(), modelTxt.getValue());
                 try {
-                    new GetInt(xql, 0).execute(session);
+                    new GetString(xql, null).execute(session);
 
                 } catch (DmException ex) {
                     throw new RuntimeException(ex);
@@ -206,8 +207,8 @@ public class MyUI extends UI {
             final VerticalLayout layout3 = new VerticalLayout();
             name1 = new TextField();
             name2 = new TextField();
-            name1.setCaption("Марка");
-            name2.setCaption("Модель");
+            name1.setCaption("Model");
+            name2.setCaption("Body");
             name1.setValue(grid.getSelectedItems().iterator().next().getModel());
             name2.setValue(grid.getSelectedItems().iterator().next().getBody());
 
@@ -219,14 +220,19 @@ public class MyUI extends UI {
                 String body = name2.getValue();
 
                 String xql = String.format(
-                        "UPDATE ddt_automobile OBJECTS SET dss_model = '%s', dss_body = '%s' WHERE r_object_id = '%s'",
+                        "UPDATE ddt_automobile OBJECTS SET dss_model = '%s' SET dss_body = '%s' WHERE r_object_id = '%s'",
                         model,
                         body,
                         grid.getSelectionModel().getFirstSelectedItem().get().getId());
+                try {
+                    new GetString(xql, null).execute(session);
 
+                } catch (DmException ex) {
+                    throw new RuntimeException(ex);
+                }
                 logger.debug(xql);
 
-                grid.getDataProvider().refreshAll();
+              //  grid.getDataProvider().refreshAll();
 
                 try {
                     initDataProvider(session);
@@ -247,7 +253,7 @@ public class MyUI extends UI {
             String xql = String.format("DELETE ddt_automobile OBJECTS WHERE r_object_id = '%s'",
                     grid.getSelectionModel().getFirstSelectedItem().get().getId());
 
-            new GetInt(xql, 0).execute(session);
+            new GetString(xql, null).execute(session);
 
             initDataProvider(session);
         }

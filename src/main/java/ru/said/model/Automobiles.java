@@ -1,24 +1,24 @@
 package ru.said.model;
 
 public class Automobiles  {
-    private int id;
+    private String id;
     private String model;
     private String body;
 
     public Automobiles() {
     }
 
-    public Automobiles(int id, String model,  String csrbody) {
+    public Automobiles(String id, String model,  String csrbody) {
         this.id = id;
         this.model = model;
         this.body = csrbody;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

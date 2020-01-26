@@ -10,7 +10,7 @@
 	<name>xql_crud</name>
 
 	<prerequisites>
-		<maven>3</maven>
+		<maven>4</maven>
 	</prerequisites>
 
 	<properties>
@@ -18,8 +18,8 @@
 		<!--<vaadin.plugin.version>8.8.0</vaadin.plugin.version>-->
 		<!--<jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>-->
 		<!--<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
-		<!--<maven.compiler.source>1.8</maven.compiler.source>-->
-		<!--<maven.compiler.target>1.8</maven.compiler.target>-->
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<!--&lt;!&ndash; If there are no local customizations, this can also be "fetch" or "cdn" &ndash;&gt;-->
 		<!--<vaadin.widgetset.mode>local</vaadin.widgetset.mode>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -131,21 +131,30 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.0.0</version>
-				<!-- Clean up also any pre-compiled themes -->
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
-					<filesets>
-						<fileset>
-							<directory>src/main/webapp/VAADIN/themes</directory>
-							<includes>
-								<include>**/styles.css</include>
-								<include>**/styles.scss.cache</include>
-							</includes>
-						</fileset>
-					</filesets>
+					<source>11</source>
+					<target>11</target>
 				</configuration>
 			</plugin>
+			<!--<plugin>-->
+				<!--<groupId>org.apache.maven.plugins</groupId>-->
+				<!--<artifactId>maven-clean-plugin</artifactId>-->
+				<!--<version>3.0.0</version>-->
+				<!--&lt;!&ndash; Clean up also any pre-compiled themes &ndash;&gt;-->
+				<!--<configuration>-->
+					<!--<filesets>-->
+						<!--<fileset>-->
+							<!--<directory>src/main/webapp/VAADIN/themes</directory>-->
+							<!--<includes>-->
+								<!--<include>**/styles.css</include>-->
+								<!--<include>**/styles.scss.cache</include>-->
+							<!--</includes>-->
+						<!--</fileset>-->
+					<!--</filesets>-->
+				<!--</configuration>-->
+			<!--</plugin>-->
 
 			<!-- The Jetty plugin allows us to easily test the development build by
 				running jetty:run on the command line. -->
